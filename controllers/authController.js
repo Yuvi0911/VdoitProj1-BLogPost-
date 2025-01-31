@@ -3,24 +3,24 @@ import { TryCatch } from "../helpers/ErrorResponse.js";
 import { sendToken } from "../helpers/SuccessResponse.js";
 import { loginUserService, logoutUserService, registerUserService } from "../services/authService.js";
 
-/* 
-    signup - It calls the registerUserService to register a new user.
-    @param {Object} req - Express request object
-    @param {Object} res - Express response object
-    @param {Function} next - Express next function
-*/
+/**
+ * signup                   - It calls the registerUserService to register a new user.
+ * @param {Object} req      - Express request object
+ * @param {Object} res      - Express response object
+ * @param {Function} next   - Express next function
+ */
 export const signup = TryCatch(async (req, res, next) => {
     const {username, email, password} = req.body;
     const user = await registerUserService({username, email, password});
     sendToken(res, user, 201, "User registered successfully");
 })
 
-/* 
-    login - It calls the loginUserService to login a user.
-    @param {Object} req - Express request object
-    @param {Object} res - Express response object
-    @param {Function} next - Express next function
-*/
+/**
+ * login                    - It calls the loginUserService to login a user.
+ * @param {Object} req      - Express request object
+ * @param {Object} res      - Express response object
+ * @param {Function} next   - Express next function
+ */
 export const login = TryCatch(async (req, res, next) => {
     const { email, password } = req.body;
     if(!email || !password){
@@ -30,12 +30,12 @@ export const login = TryCatch(async (req, res, next) => {
     sendToken(res, user, 200, `Welcome, ${user.username}`);
 })
 
-/* 
-    logout - It calls the logoutUserService to logout a user.
-    @param {Object} req - Express request object
-    @param {Object} res - Express response object
-    @param {Function} next - Express next function
-*/
+/**
+ * logout                   - It calls the logoutUserService to logout a user.
+ * @param {Object} req      - Express request object
+ * @param {Object} res      - Express response object
+ * @param {Function} next   - Express next function
+ */
 export const logout = TryCatch(async (req, res, next) => {
     const { success, message, cookieOptions: newCookieOptions} = logoutUserService();
 

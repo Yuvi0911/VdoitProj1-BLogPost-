@@ -2,7 +2,8 @@ import mongoose, {Schema, model} from "mongoose";
 import { hash } from 'bcrypt';
 import validator from "validator";
 
-const userSchema = new Schema({
+const userSchema = new Schema
+({
     username: {
         type: String,
         required: [true, "Please enter username"],

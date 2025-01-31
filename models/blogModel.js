@@ -1,6 +1,7 @@
 import mongoose, {Schema, model} from "mongoose";
 
-const blogPostSchema = new Schema({
+const blogPostSchema = new Schema
+({
     title: {
         type: String,
         required: [true, "Please enter Title"],
@@ -19,7 +20,8 @@ const blogPostSchema = new Schema({
         ref: "User",
         required: [true, "Please enter author"]
     }
-},{
+},
+{
     timestamps: true
 })
 

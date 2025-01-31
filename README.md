@@ -2,7 +2,7 @@
 
 This is the **backend server** for a **blog application**, built using **Node.js, Express.js, MongoDB**, and **JWT authentication**. It provides **CRUD operations** for managing blog posts and user authentication.
 
-## 🚀 Features
+## Features
 -  User **Authentication & Authorization** (JWT)
 -  **CRUD Operations** for blog posts
 -  **User-specific blog management**
@@ -17,9 +17,8 @@ This is the **backend server** for a **blog application**, built using **Node.js
 - **Middleware:** Express, Morgan, CORS
 - **File Upload:** Multer (if needed for images)
 
-## Installation & Setup
 
 ###  Clone the Repository
 ```sh
-git clone https://github.com/your-username/blog-api.git
+git clone https://github.com/your-username/blog-api.git](https://github.com/Yuvi0911/VdoitProj1-BLogPost-.git
 cd blog-api

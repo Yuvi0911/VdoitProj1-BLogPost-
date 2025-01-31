@@ -14,11 +14,9 @@ This is the **backend server** for a **blog application**, built using **Node.js
 - **Database:** MongoDB, Mongoose
 - **Authentication:** JWT (JSON Web Token), bcrypt
 - **Validation:** express-validator
-- **Middleware:** Express, Morgan, CORS
-- **File Upload:** Multer (if needed for images)
+- **Middleware:** Express
 
 
 ###  Clone the Repository
-```sh
 git clone https://github.com/your-username/blog-api.git](https://github.com/Yuvi0911/VdoitProj1-BLogPost-.git
-cd blog-api
+

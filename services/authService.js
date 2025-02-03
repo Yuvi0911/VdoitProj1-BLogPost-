@@ -1,6 +1,7 @@
-import { compare } from "bcrypt";
+import { compare, hash } from "bcrypt";
 import { ErrorHandler } from "../helpers/ErrorHandler.js";
 import { User } from "../models/userModel.js";
+import {prisma} from "./../prisma/index.js";
 
 /**
  * registerUserService      - It generates a new user.
@@ -9,12 +10,17 @@ import { User } from "../models/userModel.js";
  * @param {String} password - Password of the user
  * @returns {Object} user   - Returns the user object
  */
-export const registerUserService = async ({ username, email, password }) => {
-    const user = await User.create({
-        username,
-        email,
-        password
-    })
+export const registerUserService = async ({ username, email, password }) => 
+{
+    const hashedPassword = await hash(password, 10);
+    const user = await prisma.user.create({
+        data: 
+        {
+            username,
+            email,
+            password: hashedPassword,
+        }
+    });
     return user;
 }
 
@@ -24,13 +30,18 @@ export const registerUserService = async ({ username, email, password }) => {
  * @param {String} password - Password of the user
  * @returns {Object} user   - Returns the user object
  */
-export const loginUserService = async ({ email, password }) => {
-    const user              = await User.findOne({ email }).select("+password");   
-    if(!user){
+export const loginUserService = async ({ email, password }) => 
+{
+    const user = await prisma.user.findUnique({
+        where: { email },
+    }); 
+    if(!user)
+    {
         throw new ErrorHandler("Invalid email or password", 401);
     }
     const isPasswordMatched = await compare(password, user.password);
-    if(!isPasswordMatched){
+    if(!isPasswordMatched)
+    {
         throw new ErrorHandler("Invalid email or password", 401);
     }
     return user;
@@ -40,7 +51,8 @@ export const loginUserService = async ({ email, password }) => {
  * logoutUserService - It logs out the user.
  * @returns {Object} - Returns the logout response
  */
-export const logoutUserService = async () => {
+export const logoutUserService = async () => 
+{
     return {
         success: true,
         message: "Logout Successfully",

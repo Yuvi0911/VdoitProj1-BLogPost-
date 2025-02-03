@@ -1,5 +1,6 @@
 import { ErrorHandler } from "../helpers/ErrorHandler.js";
 import { BlogPost } from "../models/blogModel.js"
+import { prisma } from "./../prisma/index.js";
 
 /**
  * createBlogService        - It creates a new blog.
@@ -9,11 +10,14 @@ import { BlogPost } from "../models/blogModel.js"
  * @returns {Object} blog   - Returns the blog object
  */
 export const createBlogService = async ({title, content, userId}) => {
-    const blog = await BlogPost.create({
-        title,
-        content,
-        author: userId
+    const blog = await prisma.blogPost.create({
+        data: {
+            title,
+            content,
+            author: { connect: { id: userId } }
+        }
     })
+    
     return blog;
 }
 
@@ -22,7 +26,7 @@ export const createBlogService = async ({title, content, userId}) => {
  * @returns {Promise<BlogPost[]>} blogs - Returns an array of blogs
  */
 export const getAllBlogsService = async () => {
-    const blogs = await BlogPost.find({});
+    const blogs = await prisma.blogPost.findMany();
     return blogs;
 }
 
@@ -32,7 +36,11 @@ export const getAllBlogsService = async () => {
  * @returns {Promise<BlogPost[]>} blogs - Returns an array of blogs
  */
 export const getAllMyBlogsService = async (userId) => {
-    const blogs = await BlogPost.find({author: userId});
+    const blogs = await prisma.blogPost.findMany({
+        where: {
+            authorId: userId,
+        }
+    })
     return blogs;
 }
 
@@ -42,7 +50,17 @@ export const getAllMyBlogsService = async (userId) => {
  * @returns {Promise<BlogPost>} blog    - Returns the blog object
  */
 export const getBlogByIdService = async (blogId) => {
-    const blog = await BlogPost.findById(blogId).populate("author", "username email");
+    const blog = await prisma.blogPost.findUnique({
+        where: { id: blogId },
+        include: {
+            author: {
+                select: {
+                    username: true,
+                    email: true
+                }
+            }
+        }
+    })
     if(!blog){
         throw new ErrorHandler("Blog not found", 404);
     }
@@ -57,17 +75,31 @@ export const getBlogByIdService = async (blogId) => {
  * @param {String} userId   - UserId of the user 
  * @returns {Object} blog   - Returns the blog object
  */
-export const updateBlogService = async ({ title, content, blogId, userId }) => {
-    const blog      = await BlogPost.findById(blogId);
-    if(!blog){
+export const updateBlogService = async ({ title, content, blogId, userId }) => 
+{
+    const blog      = await prisma.blogPost.findUnique({
+        where: { id: blogId },
+        include: {
+            author: true
+        }
+    })
+    if(!blog)
+    {
         throw new ErrorHandler("Blog not found", 404);
     }
-    if(blog.author.toString() !== userId){
+    if(blog.authorId !== userId)
+    {
         throw new ErrorHandler("You are not the author of this blog", 401);
     }
-    blog.title      = title || blog.title;
-    blog.content    = content || blog.content;
-    return await blog.save();
+    const updateBlog = await prisma.blogPost.update({
+        where: { id: blogId },
+        data: 
+        {
+            title: title || blog.title,
+            content: content || blog.content
+        }
+    });
+    return updateBlog;
 }
 
 /**
@@ -76,14 +108,23 @@ export const updateBlogService = async ({ title, content, blogId, userId }) => {
  * @param {String} userId   - UserId of the user
  * @returns {Object} blog   - Returns the blog object
  */
-export const deleteBlogService = async (blogId, userId) => {
-    const blog = await BlogPost.findById(blogId);
-    if(!blog){
+export const deleteBlogService = async (blogId, userId) => 
+{
+    const blog = await prisma.blogPost.findUnique
+    ({
+        where: { id: blogId },
+        include: { author: true }
+    });
+    if(!blog)
+    {
         throw new ErrorHandler("Blog not found", 404);
     }
-    if(blog.author.toString() !== userId){
+    if(blog.authorId !== userId)
+    {
         throw new ErrorHandler("You are not the author of this blog", 401);
     }
-    await blog.deleteOne();
+    await prisma.blogPost.delete({
+        where: { id: blogId }
+    })
     return {message: "Blog deleted successfully"};
 }

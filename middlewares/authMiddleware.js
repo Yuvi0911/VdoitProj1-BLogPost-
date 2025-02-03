@@ -9,13 +9,14 @@ import { TryCatch } from "../helpers/ErrorResponse.js";
  * @param {Function} next   - Express next middleware function
  * @returns {void}
  */
-export const isAuthenticated = TryCatch((req, res, next) => {
+export const isAuthenticated = TryCatch((req, res, next) => 
+{
     const token         = req.cookies["blogPost-token"];
-    if(!token){
+    if(!token)
+    {
         const error = new ErrorHandler("Please login to access this route", 401);
     }
     const decodedData   = jwt.verify(token, process.env.JWT_SECRET);
-
     req.user            = decodedData._id;
     console.log(req.user)
     next();

@@ -4,17 +4,20 @@ import validator from "validator";
 
 const userSchema = new Schema
 ({
-    username: {
+    username: 
+    {
         type: String,
         required: [true, "Please enter username"],
     },
-    email: {
+    email: 
+    {
         type: String,
         required: [true, " Please enter your email"],
         unique: true,
         validate: [validator.isEmail, "Please enter a valid email"]
     },
-    password: {
+    password: 
+    {
         type: String,
         minLength: [8, "Password should be greater than 8 characters"],
         select: false

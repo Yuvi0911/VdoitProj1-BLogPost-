@@ -1,19 +1,15 @@
-import express from "express";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import { connectDB } from "./config/db.js";
+import express from "express";
+import { errorMiddleware } from "./helpers/ErrorResponse.js";
 import authRouter from "./routes/authRoute.js";
 import blogRouter from "./routes/blogRoute.js";
-import cookieParser from "cookie-parser";
-import { errorMiddleware } from "./helpers/ErrorResponse.js";
 
 dotenv.config({
     path: "./.env",
 })
 
 const PORT = process.env.PORT || 3000;
-const mongoURI = process.env.MONGO_URI;
-
-connectDB(mongoURI);
 
 const app = express();
 
